@@ -7,6 +7,7 @@ app = 'product-management-dark-paper-6559'
 primary_region = 'cdg'
 
 [build]
+  image = "ghcr.io/${{ github.repository }}:latest"  # Or use env vars/secrets for dynamic tags
 
 [http_service]
   internal_port = 8080

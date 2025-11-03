@@ -12,7 +12,7 @@ jobs:
     
     permissions:
       contents: read
-      packages: write
+      packages: write  # For GHCR push
 
     steps:
       - name: Checkout code
@@ -23,7 +23,7 @@ jobs:
         with:
           go-version: '1.13.1'
 
-      # Build and push Docker image to GHCR
+      # Build and push to GHCR (your existing steps)
       - name: Log in to GHCR
         uses: docker/login-action@v3
         with:
@@ -44,11 +44,13 @@ jobs:
       - name: Install flyctl
         uses: superfly/flyctl-actions/setup-flyctl@master
 
-      # Authenticate flyctl with GHCR so it can pull private images
-      - name: Authenticate flyctl with GHCR
+      # CRITICAL: Create Docker config with GHCR creds for Fly to use
+      - name: Configure Docker auth for GHCR (for Fly deploy)
         run: |
-          echo "${{ secrets.GHCR_BACKEND_KEY }}" | flyctl auth docker --username ${{ github.actor }} --registry ghcr.io
-      # Deploy using the pre-built image
+          mkdir -p ~/.docker
+          echo '{"auths":{"ghcr.io":{"username":"${{ github.actor }}","password":"${{ secrets.GHCR_BACKEND_KEY }}","auth":"$(echo -n "${{ github.actor }}:${{ secrets.GHCR_BACKEND_KEY }}" | base64)"}}}' > ~/.docker/config.json
+
+      # Deploy using the private GHCR image (now auth'd)
       - name: Deploy to Fly.io
         run: |
           flyctl deploy --remote-only --image ghcr.io/${{ github.repository }}:latest

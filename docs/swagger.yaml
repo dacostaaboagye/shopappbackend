@@ -1,0 +1,258 @@
+definitions:
+  models.AuthResponse:
+    properties:
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+    type: object
+  models.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        minLength: 8
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  models.Order:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      ordered_at:
+        type: string
+      payments:
+        items:
+          $ref: '#/definitions/models.Payment'
+        type: array
+      products:
+        items:
+          $ref: '#/definitions/models.Product'
+        type: array
+      status:
+        enum:
+        - pending
+        - paid
+        - shipped
+        - delivered
+        - canceled
+        type: string
+      total_price:
+        type: number
+      updated_at:
+        type: string
+      user:
+        allOf:
+        - $ref: '#/definitions/models.User'
+        description: Relations
+      user_id:
+        type: string
+    required:
+    - status
+    - total_price
+    - user_id
+    type: object
+  models.Payment:
+    properties:
+      amount:
+        type: number
+      created_at:
+        type: string
+      id:
+        type: string
+      method:
+        enum:
+        - card
+        - paypal
+        - mobile_money
+        - bank_transfer
+        type: string
+      order:
+        allOf:
+        - $ref: '#/definitions/models.Order'
+        description: Relations
+      order_id:
+        type: string
+      processed_at:
+        type: string
+      status:
+        enum:
+        - pending
+        - completed
+        - failed
+        - refunded
+        type: string
+      updated_at:
+        type: string
+    required:
+    - amount
+    - method
+    - order_id
+    - status
+    type: object
+  models.Product:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        minLength: 2
+        type: string
+      orders:
+        description: Relations
+        items:
+          $ref: '#/definitions/models.Order'
+        type: array
+      price:
+        type: number
+      stock:
+        minimum: 0
+        type: integer
+      updated_at:
+        type: string
+    required:
+    - name
+    - price
+    type: object
+  models.RegisterRequest:
+    properties:
+      email:
+        type: string
+      first_name:
+        minLength: 2
+        type: string
+      last_name:
+        minLength: 2
+        type: string
+      password:
+        minLength: 8
+        type: string
+    required:
+    - email
+    - first_name
+    - last_name
+    - password
+    type: object
+  models.Response:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  models.User:
+    properties:
+      activated_at:
+        type: string
+      birthday:
+        type: string
+      created_at:
+        type: string
+      email:
+        type: string
+      first_name:
+        minLength: 2
+        type: string
+      id:
+        type: string
+      last_name:
+        minLength: 2
+        type: string
+      orders:
+        items:
+          $ref: '#/definitions/models.Order'
+        type: array
+      updated_at:
+        type: string
+    required:
+    - email
+    - first_name
+    - last_name
+    type: object
+info:
+  contact:
+    email: dacostaaboagyesolomon@gmail.com
+    name: Solomon Aboagye
+    url: https://github.com/aboagye-dacosta
+  description: This is a REST API For Shop management
+  title: Bag Shop Rest API
+  version: "1.0"
+paths:
+  /api/v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login a user
+      parameters:
+      - description: Login data
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.AuthResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Login user
+      tags:
+      - Auth
+  /api/v1/auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a user
+      parameters:
+      - description: Register data
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/models.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.AuthResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Register user
+      tags:
+      - Auth
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer Token" in the format **Bearer {token}** to authenticate
+      the request.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

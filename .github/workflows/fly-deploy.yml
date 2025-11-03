@@ -47,8 +47,7 @@ jobs:
       # Authenticate flyctl with GHCR so it can pull private images
       - name: Authenticate flyctl with GHCR
         run: |
-          echo "${{ secrets.GHCR_BACKEND_KEY }}" | flyctl auth docker --password-stdin --username ${{ github.actor }} --registry ghcr.io
-
+          echo "${{ secrets.GHCR_BACKEND_KEY }}" | flyctl auth docker --username ${{ github.actor }} --registry ghcr.io
       # Deploy using the pre-built image
       - name: Deploy to Fly.io
         run: |

@@ -57,13 +57,13 @@ func (s *UserService) Create(ctx context.Context, user *models.RegisterRequest) 
 }
 
 func (s *UserService) GetByEmail(ctx context.Context, email string) (*models.User, error) {
-	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	ctx, cancel := context.WithTimeout(ctx, 15*time.Second)
 	defer cancel()
 
 	log := logger.FromContext(ctx)
 	var user models.User
 	if err :=
-		s.Users.DB.WithContext(ctx).Where("email=?", email).Find(&user).Error; err != nil {
+		s.Users.DB.WithContext(ctx).Where("email = ?", email).First(&user).Error; err != nil {
 		log.ErrLogger.Error(err.Error(), "entity", User)
 		return nil, errors.FromDb(User, err)
 	}

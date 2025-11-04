@@ -24,6 +24,7 @@ type User struct {
 	UpdatedAt   time.Time  `json:"updated_at"`
 
 	Orders []Order `json:"orders,omitempty" gorm:"foreignKey:UserID"`
+	Roles  []Role  `gorm:"many2many:user_roles;" json:"roles,omitempty"`
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) (err error) {

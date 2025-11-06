@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"runtime/debug"
 
-	"github.com/Aboagye-Dacosta/shopBackend/logger"
+	"github.com/Aboagye-Dacosta/shopBackend/internal/logger"
 )
 
 func RecoverPanic(log *logger.AppLogger) func(http.Handler) http.Handler {

@@ -10,7 +10,7 @@ import (
 	"github.com/Aboagye-Dacosta/shopBackend/internal/database/entities"
 	"github.com/Aboagye-Dacosta/shopBackend/internal/database/models"
 	appError "github.com/Aboagye-Dacosta/shopBackend/internal/errors"
-	"github.com/Aboagye-Dacosta/shopBackend/utils"
+	"github.com/Aboagye-Dacosta/shopBackend/internal/utils"
 )
 
 // loginUser godoc
@@ -80,7 +80,7 @@ func (c *Controller) HttpLoginUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := utils.VerifyHash(user.Password, existingUser.Password); err != nil {
+	if err := utils.VerifyWithHashed(user.Password, existingUser.Password); err != nil {
 		resp := utils.GenAuthResponse(codes.INVALID_PASSWORD, http.StatusBadRequest)
 		if sendErr := utils.SendResponse(w, resp); sendErr != nil {
 			http.Error(w, sendErr.Error(), http.StatusInternalServerError)
@@ -89,7 +89,7 @@ func (c *Controller) HttpLoginUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := utils.GenerateJWT(existingUser.ID)
+	token, err := utils.GenerateJWT(existingUser.ID, existingUser.Roles)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

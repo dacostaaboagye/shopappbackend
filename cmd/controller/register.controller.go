@@ -8,7 +8,7 @@ import (
 
 	"github.com/Aboagye-Dacosta/shopBackend/internal/database/entities"
 	"github.com/Aboagye-Dacosta/shopBackend/internal/database/models"
-	"github.com/Aboagye-Dacosta/shopBackend/utils"
+	"github.com/Aboagye-Dacosta/shopBackend/internal/utils"
 )
 
 // registerUser godoc
@@ -78,7 +78,7 @@ func (c *Controller) HttpRegisterUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := utils.GenerateJWT(createdUser.ID)
+	token, err := utils.GenerateJWT(createdUser.ID, createdUser.Roles)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

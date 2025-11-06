@@ -6,7 +6,7 @@ import (
 	"github.com/Aboagye-Dacosta/shopBackend/cmd/service"
 	database "github.com/Aboagye-Dacosta/shopBackend/internal/database/db"
 	"github.com/Aboagye-Dacosta/shopBackend/internal/database/models"
-	"github.com/Aboagye-Dacosta/shopBackend/logger"
+	"github.com/Aboagye-Dacosta/shopBackend/internal/logger"
 	"github.com/gorilla/mux"
 )
 

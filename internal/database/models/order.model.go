@@ -17,7 +17,7 @@ type Order struct {
 	UserID     string    `json:"user_id" validate:"required"`
 	Status     string    `json:"status" gorm:"size:50;default:'pending'" validate:"required,oneof=pending paid shipped delivered canceled"`
 	TotalPrice float64   `json:"total_price" validate:"required,gt=0"`
-	OrderedAt  time.Time `json:"ordered_at"`
+	OrderedAt  time.Time `json:"ordered_at" gorm:"autoCreateTime"`
 	CreatedAt  time.Time `json:"created_at"`
 	UpdatedAt  time.Time `json:"updated_at"`
 
@@ -27,8 +27,10 @@ type Order struct {
 	Payments []Payment `json:"payments,omitempty" gorm:"foreignKey:OrderID"`
 }
 
-func (u *Order) BeforeCreate(tx *gorm.DB) (err error) {
-	u.ID = cuid.New()
+func (o *Order) BeforeCreate(tx *gorm.DB) (err error) {
+	if o.ID == "" {
+		o.ID = cuid.New()
+	}
 	return
 }
 

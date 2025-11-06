@@ -21,7 +21,5 @@ func ConnectDB() *gorm.DB {
 		log.Fatal("Failed to Connect to Database", err)
 	}
 
-	runMigration(db)
-
 	return db
 }

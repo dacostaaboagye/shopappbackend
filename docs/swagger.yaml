@@ -6,6 +6,15 @@ definitions:
       user:
         $ref: '#/definitions/models.User'
     type: object
+  models.ErrResponse:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
   models.LoginRequest:
     properties:
       email:
@@ -94,6 +103,30 @@ definitions:
     - order_id
     - status
     type: object
+  models.Permission:
+    properties:
+      id:
+        type: string
+      name:
+        maxLength: 100
+        minLength: 3
+        type: string
+    required:
+    - name
+    type: object
+  models.PermissionsResponse:
+    properties:
+      code:
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/models.Permission'
+        type: array
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
   models.Product:
     properties:
       created_at:
@@ -150,6 +183,21 @@ definitions:
       success:
         type: boolean
     type: object
+  models.Role:
+    properties:
+      id:
+        type: string
+      name:
+        maxLength: 50
+        minLength: 3
+        type: string
+      permissions:
+        items:
+          $ref: '#/definitions/models.Permission'
+        type: array
+    required:
+    - name
+    type: object
   models.User:
     properties:
       activated_at:
@@ -172,12 +220,27 @@ definitions:
         items:
           $ref: '#/definitions/models.Order'
         type: array
+      roles:
+        items:
+          $ref: '#/definitions/models.Role'
+        type: array
       updated_at:
         type: string
     required:
     - email
     - first_name
     - last_name
+    type: object
+  models.UserResponse:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/models.User'
+      message:
+        type: string
+      success:
+        type: boolean
     type: object
 info:
   contact:
@@ -248,6 +311,56 @@ paths:
       summary: Register user
       tags:
       - Auth
+  /api/v1/permissions:
+    get:
+      consumes:
+      - application/json
+      description: Get system permissions
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.PermissionsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrResponse'
+      security:
+      - BearerAuth: []
+      summary: Get system permissions
+      tags:
+      - Roles and Permissions
+  /api/v1/users:
+    get:
+      consumes:
+      - application/json
+      description: Get registered users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrResponse'
+      security:
+      - BearerAuth: []
+      summary: Get users
+      tags:
+      - Users
 securityDefinitions:
   BearerAuth:
     description: Type "Bearer Token" in the format **Bearer {token}** to authenticate

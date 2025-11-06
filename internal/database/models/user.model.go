@@ -27,8 +27,15 @@ type User struct {
 	Roles  []Role  `gorm:"many2many:user_roles;" json:"roles,omitempty"`
 }
 
+type UserResponse struct {
+	Response
+	Data User
+}
+
 func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
-	u.ID = cuid.New()
+	if u.ID == "" {
+		u.ID = cuid.New()
+	}
 	return
 }
 

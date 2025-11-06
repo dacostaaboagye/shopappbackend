@@ -3,7 +3,7 @@ package router
 import (
 	"github.com/Aboagye-Dacosta/shopBackend/cmd/controller"
 	"github.com/Aboagye-Dacosta/shopBackend/cmd/middleware"
-	"github.com/Aboagye-Dacosta/shopBackend/logger"
+	"github.com/Aboagye-Dacosta/shopBackend/internal/logger"
 	"github.com/gorilla/mux"
 )
 
@@ -22,6 +22,7 @@ func InitRouter(c *controller.Controller, log *logger.AppLogger) *mux.Router {
 	appRouter := Router{r}
 	appRouter.initializeUserRoutes(c)
 	appRouter.initializeRegisterRoutes(c)
+	appRouter.initializePermissionsRoutes(c)
 	appRouter.initializeDocsRoute(root)
 
 	return root

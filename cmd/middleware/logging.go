@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Aboagye-Dacosta/shopBackend/logger"
+	"github.com/Aboagye-Dacosta/shopBackend/internal/logger"
 )
 
 // responseWriter wraps http.ResponseWriter to capture status code

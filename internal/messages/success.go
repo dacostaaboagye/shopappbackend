@@ -84,6 +84,24 @@ var successRegistry = map[string]map[int]Message{
 			DevMessage:  "Payment record deleted from database.",
 		},
 	},
+	entities.PERMISSIONS: {
+		http.StatusCreated: {
+			UserMessage: "Permission created successfully.",
+			DevMessage:  "Permission entity persisted to database.",
+		},
+		http.StatusOK: {
+			UserMessage: "Permission details retrieved successfully.",
+			DevMessage:  "Permission entity retrieved from DB.",
+		},
+		http.StatusAccepted: {
+			UserMessage: "Permission updated successfully.",
+			DevMessage:  "Permission entity updated in database.",
+		},
+		http.StatusNoContent: {
+			UserMessage: "Permission deleted successfully.",
+			DevMessage:  "Permission entity deleted from database.",
+		},
+	},
 }
 
 func Success(entity string, status int) string {

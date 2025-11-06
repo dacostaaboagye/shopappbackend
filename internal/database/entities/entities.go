@@ -7,4 +7,5 @@ const (
 	PAYMENT        = "payment"
 	AUTHORIZATION  = "authorization"
 	AUTHENTICATION = "authentication"
+	PERMISSIONS    = "permissions"
 )

@@ -25,8 +25,10 @@ type Product struct {
 	Orders []Order `json:"orders,omitempty" gorm:"many2many:order_products;"`
 }
 
-func (u *Product) BeforeCreate(tx *gorm.DB) (err error) {
-	u.ID = cuid.New()
+func (p *Product) BeforeCreate(tx *gorm.DB) (err error) {
+	if p.ID == "" {
+		p.ID = cuid.New()
+	}
 	return
 }
 

@@ -4,20 +4,26 @@ import (
 	stdErrors "errors"
 	"time"
 
+	"github.com/Aboagye-Dacosta/shopBackend/internal/database/models"
 	"github.com/Aboagye-Dacosta/shopBackend/internal/env"
 	appErrors "github.com/Aboagye-Dacosta/shopBackend/internal/errors"
 	"github.com/golang-jwt/jwt/v5"
 )
 
 type Claims struct {
-	UserID string `json:"user_id"`
+	UserID      string   `json:"user_id"`
+	Roles       []string `json:"roles"`
+	Permissions []string `json:"permissions"`
 	jwt.RegisteredClaims
 }
 
-func GenerateJWT(userId string) (string, error) {
+func GenerateJWT(userId string, roles []models.Role) (string, error) {
+
 	// Define the JWT claims
 	claims := Claims{
-		UserID: userId,
+		UserID:      userId,
+		Roles:       getRoles(roles),
+		Permissions: getPermissions(roles),
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(1 * time.Hour)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
@@ -29,9 +35,9 @@ func GenerateJWT(userId string) (string, error) {
 	return token.SignedString([]byte(env.GetStringEnv("JWT_SECRETE", "klwelwkewlek")))
 }
 
-func VerifyJWT(tokenString string) (string, error) {
+func VerifyJWT(tokenString string) (string, []string, error) {
 	if tokenString == "" {
-		return "", appErrors.NoTokenProvided(nil)
+		return "", nil, appErrors.NoTokenProvided(nil)
 	}
 
 	claims := &Claims{}
@@ -44,14 +50,36 @@ func VerifyJWT(tokenString string) (string, error) {
 
 	if err != nil {
 		if stdErrors.Is(err, jwt.ErrTokenExpired) {
-			return "", appErrors.ExpiredToken(err)
+			return "", nil, appErrors.ExpiredToken(err)
 		}
-		return "", appErrors.InvalidToken(err)
+		return "", nil, appErrors.InvalidToken(err)
 	}
 
 	if !token.Valid {
-		return "", appErrors.InvalidToken(nil)
+		return "", nil, appErrors.InvalidToken(nil)
 	}
 
-	return claims.UserID, nil
+	return claims.UserID, claims.Permissions, nil
+}
+
+func getPermissions(roles []models.Role) []string {
+	var permissions = make([]string, 0)
+
+	for _, role := range roles {
+		for _, perm := range role.Permissions {
+			permissions = append(permissions, perm.Name)
+		}
+	}
+
+	return permissions
+}
+func getRoles(roles []models.Role) []string {
+	var values = make([]string, 0)
+
+	for _, role := range roles {
+		values = append(values, role.Name)
+
+	}
+
+	return values
 }

@@ -77,6 +77,24 @@ var errorRegistry = map[string]map[int]Message{
 			DevMessage:  "Password verification failed: password hash mismatch or validation error.",
 		},
 	},
+	entities.PERMISSIONS: {
+		http.StatusNotFound: {
+			UserMessage: "Permission not found.",
+			DevMessage:  "Permission ID not found in database.",
+		},
+		http.StatusConflict: {
+			UserMessage: "Permission already exists.",
+			DevMessage:  "Duplicate permission name or identifier constraint.",
+		},
+		http.StatusBadRequest: {
+			UserMessage: "Invalid permission request.",
+			DevMessage:  "Permission validation failed: invalid data or constraints.",
+		},
+		http.StatusForbidden: {
+			UserMessage: "You do not have permission to perform this action.",
+			DevMessage:  "User lacks required permission for this operation.",
+		},
+	},
 }
 
 func Error(entity string, status int) string {

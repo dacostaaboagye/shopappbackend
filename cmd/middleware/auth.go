@@ -7,8 +7,8 @@ import (
 
 	"github.com/Aboagye-Dacosta/shopBackend/internal/codes"
 	appErrors "github.com/Aboagye-Dacosta/shopBackend/internal/errors"
-	"github.com/Aboagye-Dacosta/shopBackend/logger"
-	"github.com/Aboagye-Dacosta/shopBackend/utils"
+	"github.com/Aboagye-Dacosta/shopBackend/internal/logger"
+	"github.com/Aboagye-Dacosta/shopBackend/internal/utils"
 )
 
 const (
@@ -16,6 +16,7 @@ const (
 	RequestIdKey = logger.REQUEST_ID_KEY
 	UserIDKey    = logger.USER_ID_KEY
 	TraceIDKey   = logger.TRACE_ID_KEY
+	PermissionsKey = logger.PERMISSIONS_KEY
 )
 
 func AuthMiddleWare(next http.Handler) http.Handler {
@@ -41,7 +42,7 @@ func AuthMiddleWare(next http.Handler) http.Handler {
 
 		tokenStr := parts[1]
 
-		userid, err := utils.VerifyJWT(tokenStr)
+		userid, permissions, err := utils.VerifyJWT(tokenStr)
 
 		if err != nil {
 			if ae, ok := err.(*appErrors.AppError); ok {
@@ -61,6 +62,7 @@ func AuthMiddleWare(next http.Handler) http.Handler {
 		}
 
 		ctx := context.WithValue(r.Context(), UserIDKey, userid)
+		ctx = context.WithValue(ctx, PermissionsKey, permissions)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

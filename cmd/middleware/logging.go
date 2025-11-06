@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Aboagye-Dacosta/shopBackend/internal/constants"
 	"github.com/Aboagye-Dacosta/shopBackend/internal/logger"
 )
 
@@ -107,7 +108,7 @@ func RequestLogger(log *logger.AppLogger) func(http.Handler) http.Handler {
 			rw := newResponseWriter(w)
 
 			// Extract context values
-			ctx := context.WithValue(r.Context(), logger.LOGGER_KEY, log)
+			ctx := context.WithValue(r.Context(), constants.LOGGER_KEY, log)
 			// Process the request
 			next.ServeHTTP(rw, r.WithContext(ctx))
 

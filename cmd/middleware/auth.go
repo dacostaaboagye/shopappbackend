@@ -6,17 +6,17 @@ import (
 	"strings"
 
 	"github.com/Aboagye-Dacosta/shopBackend/internal/codes"
+	"github.com/Aboagye-Dacosta/shopBackend/internal/constants"
 	appErrors "github.com/Aboagye-Dacosta/shopBackend/internal/errors"
-	"github.com/Aboagye-Dacosta/shopBackend/internal/logger"
 	"github.com/Aboagye-Dacosta/shopBackend/internal/utils"
 )
 
 const (
-	AuthHeader   = "Authorization"
-	RequestIdKey = logger.REQUEST_ID_KEY
-	UserIDKey    = logger.USER_ID_KEY
-	TraceIDKey   = logger.TRACE_ID_KEY
-	PermissionsKey = logger.PERMISSIONS_KEY
+	AuthHeader     = "Authorization"
+	RequestIdKey   = constants.REQUEST_ID_KEY
+	UserIDKey      = constants.USER_ID_KEY
+	TraceIDKey     = constants.TRACE_ID_KEY
+	PermissionsKey = constants.PERMISSIONS_KEY
 )
 
 func AuthMiddleWare(next http.Handler) http.Handler {

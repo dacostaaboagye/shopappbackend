@@ -5,24 +5,15 @@ import (
 	"io"
 	"log/slog"
 	"os"
-)
 
-type ctxKey string
-
-const (
-	TRACE_ID_KEY   ctxKey = "trace_id"
-	REQUEST_ID_KEY ctxKey = "request_id"
-	USER_ID_KEY    ctxKey = "user_id"
-	PERMISSIONS_KEY ctxKey = "permissions"
-	LOGGER_KEY     ctxKey = "logger_key"
-
-	InfoFile  = "app.log"
-	ErrorFile = "error.log"
+	"github.com/Aboagye-Dacosta/shopBackend/internal/constants"
 )
 
 var (
 	infoFile  *os.File
 	errorFile *os.File
+	InfoFile  = "app.log"
+	ErrorFile = "error.log"
 )
 
 type AppLogger struct {
@@ -35,16 +26,16 @@ type CustomHandler struct {
 }
 
 func (c CustomHandler) Handle(ctx context.Context, r slog.Record) error {
-	if val, ok := ctx.Value(REQUEST_ID_KEY).(string); ok {
-		r.AddAttrs(slog.String(string(REQUEST_ID_KEY), val))
+	if val, ok := ctx.Value(constants.REQUEST_ID_KEY).(string); ok {
+		r.AddAttrs(slog.String(string(constants.REQUEST_ID_KEY), val))
 	}
 
-	if val, ok := ctx.Value(USER_ID_KEY).(string); ok {
-		r.AddAttrs(slog.String(string(USER_ID_KEY), val))
+	if val, ok := ctx.Value(constants.USER_ID_KEY).(string); ok {
+		r.AddAttrs(slog.String(string(constants.USER_ID_KEY), val))
 	}
 
-	if val, ok := ctx.Value(TRACE_ID_KEY).(string); ok {
-		r.AddAttrs(slog.String(string(TRACE_ID_KEY), val))
+	if val, ok := ctx.Value(constants.TRACE_ID_KEY).(string); ok {
+		r.AddAttrs(slog.String(string(constants.TRACE_ID_KEY), val))
 	}
 
 	return c.Handler.Handle(ctx, r)
@@ -115,7 +106,7 @@ func Close() error {
 
 func FromContext(ctx context.Context) *AppLogger {
 
-	if logger, ok := ctx.Value(LOGGER_KEY).(*AppLogger); ok {
+	if logger, ok := ctx.Value(constants.LOGGER_KEY).(*AppLogger); ok {
 		return logger
 	}
 

@@ -39,7 +39,7 @@ func (s *UserService) GetById(ctx context.Context, id string) (*models.User, err
 	defer cancel()
 	log := logger.FromContext(ctx)
 	var user models.User
-	if err := s.DB.WithContext(ctx).
+	if err := s.DB.WithContext(ctx).Where("id=?", id).
 		Preload("Roles.Permissions").
 		Preload("Roles").
 		First(&user).Error; err != nil {

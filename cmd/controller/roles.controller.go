@@ -67,7 +67,7 @@ func (c *Controller) HttpGetRole(w http.ResponseWriter, r *http.Request) {
 // @Success      200  {object} models.Response{data=[]models.Role}
 // @Failure      400  {object} models.ErrResponse
 // @Failure      500  {object} models.ErrResponse
-// @Router       /api/v1/roles/{id} [get]
+// @Router       /api/v1/roles [get]
 func (c *Controller) HttpGetAllRoles(w http.ResponseWriter, r *http.Request) {
 	roles, err := c.rolesService.GetAll(r.Context())
 

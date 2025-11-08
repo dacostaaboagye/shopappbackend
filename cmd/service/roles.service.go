@@ -26,7 +26,7 @@ func (s *RoleService) GetAll(ctx context.Context) (roles []*models.Role, err err
 	defer cancel()
 
 	log := logger.FromContext(ctx)
-	if err = s.roles.DB.WithContext(ctx).Find(roles).Error; err != nil {
+	if err = s.roles.DB.WithContext(ctx).Preload("Permissions").Find(roles).Error; err != nil {
 		log.ErrLogger.ErrorContext(ctx, err.Error(), "entity", User)
 		err = appErrors.FromDb(Role, err)
 	}
@@ -41,7 +41,7 @@ func (s *RoleService) GetRole(ctx context.Context, id string) (tRole *models.Rol
 	defer cancel()
 
 	log := logger.FromContext(ctx)
-	if err = s.roles.DB.WithContext(ctx).Where("id=?", id).First(tRole).Error; err != nil {
+	if err = s.roles.DB.WithContext(ctx).Where("id=?", id).Preload("Permissions").First(tRole).Error; err != nil {
 		log.ErrLogger.ErrorContext(ctx, err.Error(), "entity", User)
 		err = appErrors.FromDb(Role, err)
 	}
@@ -177,7 +177,6 @@ func (s *RoleService) DeleteRole(ctx context.Context, id string) error {
 		return appErrors.New(Role, codes.ROLE_IN_USE, errors.New("Roles is in use"))
 	}
 
-	
 	err := s.roles.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		// Clear role-permission relationships
 		if err := tx.Model(&existing).Association("Permissions").Clear(); err != nil {

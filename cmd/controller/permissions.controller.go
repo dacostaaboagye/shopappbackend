@@ -9,8 +9,8 @@ import (
 )
 
 // getPermissions godoc
-// @Summary      Get system permissions
-// @Description  Get system permissions
+// @Summary      Get  permissions
+// @Description  Get all permissions
 // @Tags         Roles and Permissions
 // @Security     BearerAuth
 // @Accept       json
